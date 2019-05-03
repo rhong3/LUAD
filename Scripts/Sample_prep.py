@@ -45,7 +45,7 @@ def tile_ids_in(slide, level, root_dir, label, ignore=['.DS_Store','dict.csv', '
 
 
 # Get all svs images with its label as one file; level is the tile resolution level
-def big_image_sum(pmd, path='../tiles/', ref_file='../dummy_His_MUT_joined.csv'):
+def big_image_sum(pmd, path='../tiles/', ref_file='../label.csv'):
     if not os.path.isdir(path):
         os.mkdir(path)
         import Cutter
@@ -53,56 +53,13 @@ def big_image_sum(pmd, path='../tiles/', ref_file='../dummy_His_MUT_joined.csv')
     allimg = image_ids_in(path)
     ref = pd.read_csv(ref_file, header=0)
     big_images = []
-    for level in range(3):
-        level = str(level)
-        if pmd == 'subtype':
-            ref = ref.loc[ref['subtype_0NA'] == 0]
-            MSIimg = intersection(ref.loc[ref['subtype_MSI'] == 1]['name'].tolist(), allimg)
-            EMimg = intersection(ref.loc[ref['subtype_Endometrioid'] == 1]['name'].tolist(), allimg)
-            SLimg = intersection(ref.loc[ref['subtype_Serous-like'] == 1]['name'].tolist(), allimg)
-            POLEimg = intersection(ref.loc[ref['subtype_POLE'] == 1]['name'].tolist(), allimg)
-            for i in MSIimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
-            for i in EMimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
-            for i in SLimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 2])
-            for i in POLEimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 3])
-        elif pmd == 'histology':
-            ref = ref.loc[ref['histology_0NA'] == 0]
-            EMimg = intersection(ref.loc[ref['histology_Endometrioid'] == 1]['name'].tolist(), allimg)
-            Serousimg = intersection(ref.loc[ref['histology_Serous'] == 1]['name'].tolist(), allimg)
-            Mixedimg = intersection(ref.loc[ref['histology_Mixed'] == 1]['name'].tolist(), allimg)
-            for i in EMimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
-            for i in Serousimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
-            for i in Mixedimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 2])
-        elif pmd in ['Endometrioid', 'MSI', 'Serous-like', 'POLE']:
-            ref = ref.loc[ref['subtype_0NA'] == 0]
-            negimg = intersection(ref.loc[ref['subtype_{}'.format(pmd)] == 0]['name'].tolist(), allimg)
-            posimg = intersection(ref.loc[ref['subtype_{}'.format(pmd)] == 1]['name'].tolist(), allimg)
-            for i in negimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
-            for i in posimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
-        elif pmd in ['histology_Endometrioid', 'histology_Serous', 'histology_Mixed']:
-            ref = ref.loc[ref['histology_0NA'] == 0]
-            negimg = intersection(ref.loc[ref[pmd] == 0]['name'].tolist(), allimg)
-            posimg = intersection(ref.loc[ref[pmd] == 1]['name'].tolist(), allimg)
-            for i in negimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
-            for i in posimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
-        else:
-            negimg = intersection(ref.loc[ref[pmd] == 0]['name'].tolist(), allimg)
-            posimg = intersection(ref.loc[ref[pmd] == 1]['name'].tolist(), allimg)
-            for i in negimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
-            for i in posimg:
-                big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
+    level = str(0)
+    negimg = intersection(ref.loc[ref[pmd] == 0]['SlideID'].tolist(), allimg)
+    posimg = intersection(ref.loc[ref[pmd] == 1]['SlideID'].tolist(), allimg)
+    for i in negimg:
+        big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
+    for i in posimg:
+        big_images.append([i, level, path + "{}/level{}".format(i, level), 1])
 
     datapd = pd.DataFrame(big_images, columns=['slide', 'level', 'path', 'label'])
     datapd.to_csv(path + "All_images.csv", header=True, index=False)

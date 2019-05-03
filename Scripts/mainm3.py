@@ -30,12 +30,7 @@ try:
 except IndexError:
     level = None
 
-if pdmd == 'subtype':
-    classes = 4
-elif pdmd == 'histology':
-    classes = 3
-else:
-    classes = 2
+classes = 2
 
 bs = int(bs)
 ep = int(ep)
