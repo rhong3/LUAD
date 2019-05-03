@@ -46,7 +46,7 @@ def normalization(img, sttd):
 # x and y are the upper left position of each tile; tile_size is tile size; stepsize of each step; x0 is the row to cut.
 # outdir is the output directory for images;
 # imloc record each tile's relative and absolute coordinates; imlist is a list of cut tiles (Removed 01/24/2019).
-def v_slide(slp, n_y, x, y, tile_size, stepsize, x0, outdir, level, dp, std):
+def v_slide(slp, n_y, x, y, tile_size, stepsize, x0, outdir, level, dp):
     # pid = os.getpid()
     # print('{}: start working'.format(pid))
     slide = OpenSlide(slp)
@@ -85,8 +85,8 @@ def tile(image_file, outdir, level, path_to_slide="../images/", dp=False, ft=1):
     print(slp)
     print(slide.level_dimensions)
 
-    std_img = staintools.read_image("../colorstandard.png")
-    std_img = staintools.LuminosityStandardizer.standardize(std_img)
+    # std_img = staintools.read_image("../colorstandard.png")
+    # std_img = staintools.LuminosityStandardizer.standardize(std_img)
 
     bounds_width = slide.level_dimensions[level][0]
     bounds_height = slide.level_dimensions[level][1]
@@ -110,7 +110,7 @@ def tile(image_file, outdir, level, path_to_slide="../images/", dp=False, ft=1):
     pool = mp.Pool(processes=mp.cpu_count())
     tasks = []
     while x0 < n_x:
-        task = tuple((slp, n_y, x, y, full_width_region, stepsize, x0, outdir, level, dp, std_img))
+        task = tuple((slp, n_y, x, y, full_width_region, stepsize, x0, outdir, level, dp))
         tasks.append(task)
         x0 += 1
     # slice images with multiprocessing
