@@ -54,8 +54,8 @@ def big_image_sum(pmd, path='../tiles/', ref_file='../label.csv'):
     ref = pd.read_csv(ref_file, header=0)
     big_images = []
     level = str(0)
-    negimg = intersection(ref.loc[ref[pmd] == 0]['SlideID'].tolist(), allimg)
-    posimg = intersection(ref.loc[ref[pmd] == 1]['SlideID'].tolist(), allimg)
+    negimg = intersection(ref.loc[ref[pmd] == 0]['Slide_ID'].tolist(), allimg)
+    posimg = intersection(ref.loc[ref[pmd] == 1]['Slide_ID'].tolist(), allimg)
     for i in negimg:
         big_images.append([i, level, path + "{}/level{}".format(i, level), 0])
     for i in posimg:

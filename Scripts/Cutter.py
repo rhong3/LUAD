@@ -28,20 +28,24 @@ def cut():
             tff = 1
             fd = 'CPTAC/'
         try:
-            os.mkdir("../tiles/{}/{}".format(str(level), row['Slide_ID']))
+            os.mkdir("../tiles/{}".format(row['Slide_ID']))
+        except FileExistsError:
+            pass
+        try:
+            os.mkdir("../tiles/{}/level{}".format(row['Slide_ID'], str(level)))
             dup = False
-        except(FileExistsError):
+        except FileExistsError:
             dup = True
             pass
-        otdir = "../tiles/{}/{}".format(str(level), row['Slide_ID'])
+        otdir = "../tiles/{}/level{}".format(row['Slide_ID'], str(level))
         try:
             os.mkdir(otdir)
-        except(FileExistsError):
+        except FileExistsError:
             pass
         try:
             n_x, n_y, raw_img, resx, resy, ct = Slicer.tile(image_file=fd + row['FileName'], outdir=otdir,
                                                             level=level, dp=dup, ft=tff)
-        except(IndexError):
+        except IndexError:
             pass
         if len(os.listdir(otdir)) < 2:
             shutil.rmtree(otdir, ignore_errors=True)
