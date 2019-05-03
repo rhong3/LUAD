@@ -2,9 +2,9 @@
 import pandas as pd
 import numpy as np
 
-imglist = pd.read_csv('../CPTAC-LUAD-HEslide-filename-mapping_Jan2019.csv', header=0)
+imglist = pd.read_csv('CPTAC-LUAD-HEslide-filename-mapping_Jan2019.csv', header=0)
 
-samplelist = pd.read_csv('../CPTAC_LUAD.csv', header=0)
+samplelist = pd.read_csv('CPTAC_LUAD.csv', header=0)
 
 imglist = imglist[['Slide_ID', 'FileName']]
 
@@ -14,7 +14,9 @@ samplelist = samplelist.dropna(subset=['FileName'])
 
 samplelist = samplelist[['Case_ID', 'Slide_ID', 'FileName']]
 
-Labelfile = pd.read_csv('../luad-v2.0-sample-annotation.csv', header=0)
+Labelfile = pd.read_csv('luad-v2.0-sample-annotation.csv', header=0)
+
+Labelfile = Labelfile.loc[Labelfile['Type'] == 'Tumor']
 
 Labelfile = Labelfile[['Participant', 'STK11.mutation.status']]
 
@@ -26,7 +28,7 @@ Labelfile = Labelfile.drop('Case_ID', axis=1)
 
 Labelfile = Labelfile.drop_duplicates()
 
-Labelfile.to_csv('../CPTAC_Joint.csv', index=False, header=True)
+Labelfile.to_csv('CPTAC_Joint.csv', index=False, header=True)
 
 # TCGA
 
@@ -67,6 +69,11 @@ TCGAall = TCGAall.rename(columns={'submitter_id': 'Slide_ID'})
 
 TCGAall = TCGAall.join(TCGAim.set_index('Slide_ID'), how='inner', on='Slide_ID')
 TCGAall = TCGAall.drop_duplicates()
+lll = []
+for idx, row in TCGAall.iterrows():
+   lll.append(row['Slide_ID']+'-'+row['FileName'].split('-')[-2])
+TCGAall['Slide_ID'] = lll
+
 TCGAall.to_csv('TCGA_Joint.csv', index=False, header=True)
 
 LUADlabel = pd.concat([Labelfile, TCGAall])
