@@ -22,7 +22,7 @@ def cut():
 
     for index, row in ref.iterrows():
         if 'TCGA' in row['Slide_ID']:
-            tff = 2
+            tff = 3
             fd = 'TCGA/'
         else:
             tff = 1
