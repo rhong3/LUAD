@@ -25,13 +25,12 @@ bs = sys.argv[2]    # batch size
 ep = sys.argv[3]    # epochs to train
 md = sys.argv[4]    # structure to use
 pdmd = sys.argv[5]  # feature to predict
+try:
+    level = sys.argv[6]  # level of tiles to use
+except IndexError:
+    level = None
 
-if pdmd == 'subtype':
-    classes = 4
-elif pdmd == 'histology':
-    classes = 3
-else:
-    classes = 2
+classes = 2
 
 bs = int(bs)
 ep = int(ep)
