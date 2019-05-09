@@ -139,9 +139,9 @@ def set_sep(alll, path, cls, cut=0.2):
         subset = alll.loc[alll['label'] == i]
         unq = list(subset.slide.unique())
         np.random.shuffle(unq)
-        validation = unq[:int(len(unq)*cut/4)]
+        validation = unq[:int(len(unq)*cut/2)]
         valist.append(subset[subset['slide'].isin(validation)])
-        test = unq[int(len(unq)*cut/4):int(len(unq)*cut)]
+        test = unq[int(len(unq)*cut/2):int(len(unq)*cut)]
         telist.append(subset[subset['slide'].isin(test)])
         train = unq[int(len(unq)*cut):]
         trlist.append(subset[subset['slide'].isin(train)])
@@ -164,8 +164,9 @@ def set_sep(alll, path, cls, cut=0.2):
     train_tiles = sku.shuffle(train_tiles)
     validation_tiles = sku.shuffle(validation_tiles)
     # Use 30% of all tiles as we have tooooo many tiles
-    train_tiles = train_tiles.sample(frac=0.3, replace=False)
-    validation_tiles = validation_tiles.sample(frac=0.3, replace=False)
+    train_tiles = train_tiles.sample(frac=0.30, replace=False)
+    validation_tiles = validation_tiles.sample(frac=0.30, replace=False)
+    test_tiles = test_tiles.sample(frac=0.30, replace=False)
     test_tiles.to_csv(path+'/te_sample.csv', header=True, index=False)
     train_tiles.to_csv(path+'/tr_sample.csv', header=True, index=False)
     validation_tiles.to_csv(path+'/va_sample.csv', header=True, index=False)
