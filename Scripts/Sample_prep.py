@@ -75,16 +75,22 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     valist = []
     if level:
         alll = alll[alll.level == level]
+
+    # Added
+    TCGA = alll[alll['slide'].str.contains("TCGA")]
+    CPTAC = alll[~alll['slide'].str.contains("TCGA")]
+    np.random.shuffle(CPTAC)
+    telist.append(CPTAC)
     for i in range(cls):
-        subset = alll.loc[alll['label'] == i]
+        subset = TCGA.loc[alll['label'] == i]
         unq = list(subset.slide.unique())
         np.random.shuffle(unq)
         validation = unq[:int(len(unq)*cut/2)]
         valist.append(subset[subset['slide'].isin(validation)])
-        test = unq[int(len(unq)*cut/2):int(len(unq)*cut)]
-        telist.append(subset[subset['slide'].isin(test)])
-        train = unq[int(len(unq)*cut):]
+        train = unq[int(len(unq)*cut/2):]
         trlist.append(subset[subset['slide'].isin(train)])
+    # End of Added
+
     test = pd.concat(telist)
     train = pd.concat(trlist)
     validation = pd.concat(valist)
@@ -107,9 +113,9 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     train_tiles = sku.shuffle(train_tiles)
     validation_tiles = sku.shuffle(validation_tiles)
 
-    train_tiles = train_tiles.sample(frac=0.10, replace=False)
-    validation_tiles = validation_tiles.sample(frac=0.10, replace=False)
-    test_tiles = test_tiles.sample(frac=0.10, replace=False)
+    train_tiles = train_tiles.sample(frac=0.20, replace=False)
+    validation_tiles = validation_tiles.sample(frac=0.20, replace=False)
+    test_tiles = test_tiles.sample(frac=0.20, replace=False)
 
     test_tiles.to_csv(path+'/te_sample.csv', header=True, index=False)
     train_tiles.to_csv(path+'/tr_sample.csv', header=True, index=False)
