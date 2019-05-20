@@ -79,7 +79,6 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     # Added
     TCGA = alll[alll['slide'].str.contains("TCGA")]
     CPTAC = alll[~alll['slide'].str.contains("TCGA")]
-    np.random.shuffle(CPTAC)
     telist.append(CPTAC)
     for i in range(cls):
         subset = TCGA.loc[alll['label'] == i]
