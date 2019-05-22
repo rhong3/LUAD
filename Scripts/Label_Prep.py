@@ -2,9 +2,9 @@
 import pandas as pd
 import numpy as np
 
-imglist = pd.read_csv('CPTAC-LUAD-HEslide-filename-mapping_Jan2019.csv', header=0)
+imglist = pd.read_csv('../CPTAC-LUAD-HEslide-filename-mapping_Jan2019.csv', header=0)
 
-samplelist = pd.read_csv('CPTAC_LUAD.csv', header=0)
+samplelist = pd.read_csv('../CPTAC_LUAD.csv', header=0)
 
 imglist = imglist[['Slide_ID', 'FileName']]
 
@@ -14,7 +14,7 @@ samplelist = samplelist.dropna(subset=['FileName'])
 
 samplelist = samplelist[['Case_ID', 'Slide_ID', 'FileName']]
 
-Labelfile = pd.read_csv('luad-v2.0-sample-annotation.csv', header=0)
+Labelfile = pd.read_csv('../luad-v2.0-sample-annotation.csv', header=0)
 
 Labelfile = Labelfile.loc[Labelfile['Type'] == 'Tumor']
 
@@ -24,11 +24,13 @@ Labelfile = Labelfile.rename(columns={'Participant': 'Case_ID', 'STK11.mutation.
 
 Labelfile = Labelfile.join(samplelist.set_index('Case_ID'), how='inner', on='Case_ID')
 
+print(len(list(Labelfile.Case_ID.unique())))
+
 Labelfile = Labelfile.drop('Case_ID', axis=1)
 
 Labelfile = Labelfile.drop_duplicates()
 
-Labelfile.to_csv('CPTAC_Joint.csv', index=False, header=True)
+Labelfile.to_csv('../CPTAC_Joint.csv', index=False, header=True)
 
 # TCGA
 
@@ -53,9 +55,9 @@ TCGAls.to_csv('../TCGAls.csv', index=False, header=True)
 
 import pandas as pd
 import os
-TCGAall = pd.read_csv('TCGA_all.tsv', sep='\t', header=0)
-TCGAstk = pd.read_csv('TCGA_STK11_MUT.tsv', sep='\t', header=0)
-TCGAim = pd.read_csv('TCGAls.csv', header=0)
+TCGAall = pd.read_csv('../TCGA_all.tsv', sep='\t', header=0)
+TCGAstk = pd.read_csv('../TCGA_STK11_MUT.tsv', sep='\t', header=0)
+TCGAim = pd.read_csv('../TCGAls.csv', header=0)
 
 TCGAall = TCGAall[['case_id', 'submitter_id']]
 TCGAstk = TCGAstk[['submitter_id', 'STK11']]
@@ -69,6 +71,9 @@ TCGAall = TCGAall.rename(columns={'submitter_id': 'Slide_ID'})
 
 TCGAall = TCGAall.join(TCGAim.set_index('Slide_ID'), how='inner', on='Slide_ID')
 TCGAall = TCGAall.drop_duplicates()
+
+print(len(list(TCGAall.Slide_ID.unique())))
+
 lll = []
 for idx, row in TCGAall.iterrows():
    lll.append(row['Slide_ID']+'-'+row['FileName'].split('-')[-2])
