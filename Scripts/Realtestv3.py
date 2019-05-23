@@ -98,8 +98,7 @@ if __name__ == "__main__":
 
     lbdict = {0: 'negative', 1: pdmd}
     # MSI is labeled red in output heat map
-    poscsv = joined.loc[joined['Prediction'] == pdmd]
-    for index, row in poscsv.iterrows():
+    for index, row in joined.iterrows():
         opt[int(row["X_pos"]), int(row["Y_pos"])] = 255
         hm_R[int(row["X_pos"]), int(row["Y_pos"])] = 255
         hm_G[int(row["X_pos"]), int(row["Y_pos"])] = int((1-(row["POS_score"]))*255)
