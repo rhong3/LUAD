@@ -76,19 +76,34 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     if level:
         alll = alll[alll.level == level]
 
-    # Added
-    TCGA = alll[alll['slide'].str.contains("TCGA")]
-    CPTAC = alll[~alll['slide'].str.contains("TCGA")]
-    telist.append(CPTAC)
+    # CPTAC only
+    alll = alll[~alll['slide'].str.contains("TCGA")]
+
+
+    # # Added
+    # TCGA = alll[alll['slide'].str.contains("TCGA")]
+    # CPTAC = alll[~alll['slide'].str.contains("TCGA")]
+    # telist.append(CPTAC)
+    # for i in range(cls):
+    #     subset = TCGA.loc[alll['label'] == i]
+    #     unq = list(subset.slide.unique())
+    #     np.random.shuffle(unq)
+    #     validation = unq[:int(len(unq)*cut/2)]
+    #     valist.append(subset[subset['slide'].isin(validation)])
+    #     train = unq[int(len(unq)*cut/2):]
+    #     trlist.append(subset[subset['slide'].isin(train)])
+    # # End of Added
+
     for i in range(cls):
-        subset = TCGA.loc[alll['label'] == i]
+        subset = alll.loc[alll['label'] == i]
         unq = list(subset.slide.unique())
         np.random.shuffle(unq)
         validation = unq[:int(len(unq)*cut/2)]
         valist.append(subset[subset['slide'].isin(validation)])
-        train = unq[int(len(unq)*cut/2):]
+        test = unq[int(len(unq)*cut/2):int(len(unq)*cut)]
+        telist.append(subset[subset['slide'].isin(test)])
+        train = unq[int(len(unq)*cut):]
         trlist.append(subset[subset['slide'].isin(train)])
-    # End of Added
 
     test = pd.concat(telist)
     train = pd.concat(trlist)
