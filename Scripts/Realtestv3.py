@@ -73,7 +73,6 @@ def _bytes_feature(value):
 def loader(totlist_dir):
     telist = pd.read_csv(totlist_dir+'/dict.csv', header=0)
     teimlist = telist['Loc'].values.tolist()
-    telblist = telist['Num'].values.tolist()
 
     test_filename = data_dir+'/test.tfrecords'
     writer = tf.python_io.TFRecordWriter(test_filename)
@@ -83,10 +82,8 @@ def loader(totlist_dir):
         try:
             # Load the image
             img = load_image(teimlist[i])
-            label = telblist[i]
             # Create a feature
-            feature = {'test/label': _int64_feature(label),
-                       'test/image': _bytes_feature(tf.compat.as_bytes(img.tostring()))}
+            feature = {'test/image': _bytes_feature(tf.compat.as_bytes(img.tostring()))}
             # Create an example protocol buffer
             example = tf.train.Example(features=tf.train.Features(feature=feature))
 
