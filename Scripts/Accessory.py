@@ -419,10 +419,6 @@ def CAM(net, w, pred, x, y, path, name, bs, pmd, rd=0):
         activation_lastconv = activation_lastconv.T
 
         topNum = 1  # generate heatmap for top X prediction results
-        scores = pred[ij]
-        scoresMean = np.mean(scores, axis=0)
-        ascending_order = np.argsort(scoresMean)
-        IDX_category = ascending_order[::-1]  # [::-1] to sort in descending order
         prdd = prl[ij, 0]
         curCAMmapAll = py_returnCAMmap(activation_lastconv, weights_LR[[prdd], :])
         DIRR = dirdict[prdd]
@@ -471,42 +467,39 @@ def CAM_R(net, w, pred, x, path, name, bs, rd=0):
     prl = pdx.argmax(axis=1).astype('uint8')
 
     for ij in range(len(prl)):
-        id = str(ij + rd)
-        weights_LR = w
-        activation_lastconv = np.array([net[ij]])
-        weights_LR = weights_LR.T
-        activation_lastconv = activation_lastconv.T
+        if prl[ij, 0] > 0:
+            id = str(ij + rd)
+            weights_LR = w
+            activation_lastconv = np.array([net[ij]])
+            weights_LR = weights_LR.T
+            activation_lastconv = activation_lastconv.T
 
-        topNum = 1  # generate heatmap for top X prediction results
-        scores = pred[ij]
-        scoresMean = np.mean(scores, axis=0)
-        ascending_order = np.argsort(scoresMean)
-        IDX_category = ascending_order[::-1]  # [::-1] to sort in descending order
-        curCAMmapAll = py_returnCAMmap(activation_lastconv, weights_LR[[1], :])
-        for kk in range(topNum):
-            curCAMmap_crops = curCAMmapAll[:, :, kk]
-            curCAMmapLarge_crops = cv2.resize(curCAMmap_crops, (299, 299))
-            curHeatMap = cv2.resize(im2double(curCAMmapLarge_crops), (299, 299))  # this line is not doing much
-            curHeatMap = im2double(curHeatMap)
-            curHeatMap = py_map2jpg(curHeatMap, None, 'jet')
-            xim = x[ij].reshape(-1, 3)
-            xim1 = xim[:, 0].reshape(-1, 299)
-            xim2 = xim[:, 1].reshape(-1, 299)
-            xim3 = xim[:, 2].reshape(-1, 299)
-            image = np.empty([299,299,3])
-            image[:, :, 0] = xim1
-            image[:, :, 1] = xim2
-            image[:, :, 2] = xim3
-            a = im2double(image) * 255
-            b = im2double(curHeatMap) * 255
-            curHeatMap = a * 0.6 + b * 0.4
-            ab = np.hstack((a,b))
-            full = np.hstack((curHeatMap, ab))
-            # imname = DIRR + '/' + id + '.png'
-            # imname1 = DIRR + '/' + id + '_img.png'
-            # imname2 = DIRR + '/' + id +'_hm.png'
-            imname3 = DIRR + '/' + id + '_full.png'
-            # cv2.imwrite(imname, curHeatMap)
-            # cv2.imwrite(imname1, a)
-            # cv2.imwrite(imname2, b)
-            cv2.imwrite(imname3, full)
+            topNum = 1  # generate heatmap for top X prediction results
+            curCAMmapAll = py_returnCAMmap(activation_lastconv, weights_LR[[1], :])
+            for kk in range(topNum):
+                curCAMmap_crops = curCAMmapAll[:, :, kk]
+                curCAMmapLarge_crops = cv2.resize(curCAMmap_crops, (299, 299))
+                curHeatMap = cv2.resize(im2double(curCAMmapLarge_crops), (299, 299))  # this line is not doing much
+                curHeatMap = im2double(curHeatMap)
+                curHeatMap = py_map2jpg(curHeatMap, None, 'jet')
+                xim = x[ij].reshape(-1, 3)
+                xim1 = xim[:, 0].reshape(-1, 299)
+                xim2 = xim[:, 1].reshape(-1, 299)
+                xim3 = xim[:, 2].reshape(-1, 299)
+                image = np.empty([299,299,3])
+                image[:, :, 0] = xim1
+                image[:, :, 1] = xim2
+                image[:, :, 2] = xim3
+                a = im2double(image) * 255
+                b = im2double(curHeatMap) * 255
+                curHeatMap = a * 0.6 + b * 0.4
+                ab = np.hstack((a,b))
+                full = np.hstack((curHeatMap, ab))
+                # imname = DIRR + '/' + id + '.png'
+                # imname1 = DIRR + '/' + id + '_img.png'
+                # imname2 = DIRR + '/' + id +'_hm.png'
+                imname3 = DIRR + '/' + id + '_full.png'
+                # cv2.imwrite(imname, curHeatMap)
+                # cv2.imwrite(imname1, a)
+                # cv2.imwrite(imname2, b)
+                cv2.imwrite(imname3, full)
