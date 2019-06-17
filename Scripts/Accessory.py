@@ -457,7 +457,7 @@ def CAM(net, w, pred, x, y, path, name, bs, pmd, rd=0):
 
 
 # CAM for real test; no need to determine correct or wrong
-def CAM_R(net, w, pred, x, path, name, bs, pmd, rd=0):
+def CAM_R(net, w, pred, x, path, name, bs, rd=0):
     DIRR = "../Results/{}/out/{}_img".format(path, name)
     rd = rd * bs
 
