@@ -17,6 +17,7 @@ import cnn4
 import pandas as pd
 import cv2
 import skimage.morphology as mph
+import tensorflow as tf
 
 
 dirr = sys.argv[1]  # name of output directory
@@ -50,18 +51,67 @@ data_dir = "../Results/{}/data".format(dirr)
 out_dir = "../Results/{}/out".format(dirr)
 
 
-# load image tiles
-def loader(images, bs, ct):
-    dataset = data_input2.DataSet(bs, ct, images=images)
-    return dataset
+# read images
+def load_image(addr):
+    img = cv2.imread(addr)
+    img = img.astype(np.float32)
+    return img
+
+
+# used for tfrecord labels generation
+def _int64_feature(value):
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+
+
+# used for tfrecord images generation
+def _bytes_feature(value):
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+
+
+# loading images for dictionaries and generate tfrecords
+def loader(totlist_dir):
+    telist = pd.read_csv(totlist_dir+'/dict.csv', header=0)
+    teimlist = telist['Loc'].values.tolist()
+    telblist = telist['Num'].values.tolist()
+
+    test_filename = data_dir+'/test.tfrecords'
+    writer = tf.python_io.TFRecordWriter(test_filename)
+    for i in range(len(teimlist)):
+        if not i % 1000:
+            sys.stdout.flush()
+        try:
+            # Load the image
+            img = load_image(teimlist[i])
+            label = telblist[i]
+            # Create a feature
+            feature = {'test/label': _int64_feature(label),
+                       'test/image': _bytes_feature(tf.compat.as_bytes(img.tostring()))}
+            # Create an example protocol buffer
+            example = tf.train.Example(features=tf.train.Features(feature=feature))
+
+            # Serialize to string and write on the file
+            writer.write(example.SerializeToString())
+        except AttributeError:
+            print('Error image:'+teimlist[i])
+            pass
+    writer.close()
+    sys.stdout.flush()
+
+
+# load tfrecords and prepare datasets
+def tfreloader(mode, ep, bs, ct):
+    filename = data_dir + '/' + mode + '.tfrecords'
+    datasets = data_input2.DataSet(bs, ct, ep=ep, mode=mode, filename=filename)
+
+    return datasets
 
 
 # main function for real test image prediction
-def test(images, count, bs, to_reload=None):
+def test(count, bs, to_reload=None):
     m = cnn4.INCEPTION(INPUT_DIM, HYPERPARAMS, meta_graph=to_reload, log_dir=LOG_DIR, meta_dir=LOG_DIR, model=md)
 
     print("Loaded! Ready for test!")
-    HE = loader(images, bs, count)
+    HE = tfreloader('test', 1, bs, count)
     m.inference(HE, dirr, Not_Realtest=False, bs=bs, pmd=pdmd)
 
 
@@ -74,12 +124,12 @@ if __name__ == "__main__":
             pass
     start_time = time.time()
     # cut tiles with coordinates in the name (exclude white)
-    n_x, n_y, raw_img, resx, resy, imgs, ct = Slicer.tile(image_file=imgfile, outdir=out_dir, level=0)
+    n_x, n_y, raw_img, resx, resy, ct = Slicer.tile(image_file=imgfile, outdir=out_dir, level=0)
     print("--- %s seconds ---" % (time.time() - start_time))
     # load tiles dictionary
     dict = pd.read_csv(out_dir+'/dict.csv', header=0)
     # predictions on tiles
-    test(imgs, ct, bs, to_reload=modeltoload)
+    test(ct, bs, to_reload=modeltoload)
     # load dictionary of predictions on tiles
     teresult = pd.read_csv(out_dir+'/Test.csv', header=0)
     # join 2 dictionaries
