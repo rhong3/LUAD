@@ -45,8 +45,9 @@ HYPERPARAMS = {
 }
 
 # path of directories
-LOG_DIR = "../Results/{}".format(dirr)
-METAGRAPH_DIR = "../Results/{}".format(dirr)
+dddir = "../Results/{}".format(dirr)
+LOG_DIR = "../Results/I3"
+METAGRAPH_DIR = "../Results/I3"
 data_dir = "../Results/{}/data".format(dirr)
 out_dir = "../Results/{}/out".format(dirr)
 
@@ -117,7 +118,7 @@ def test(count, bs, to_reload=None):
 
 if __name__ == "__main__":
     # make directories if not exist
-    for DIR in (LOG_DIR, METAGRAPH_DIR, data_dir, out_dir):
+    for DIR in (dddir, LOG_DIR, METAGRAPH_DIR, data_dir, out_dir):
         try:
             os.mkdir(DIR)
         except FileExistsError:
@@ -128,6 +129,8 @@ if __name__ == "__main__":
     print("--- %s seconds ---" % (time.time() - start_time))
     # load tiles dictionary
     dict = pd.read_csv(out_dir+'/dict.csv', header=0)
+    if not os.path.isfile(data_dir + '/test.tfrecords'):
+        loader(data_dir)
     # predictions on tiles
     test(ct, bs, to_reload=modeltoload)
     # load dictionary of predictions on tiles
