@@ -125,10 +125,10 @@ if __name__ == "__main__":
             pass
     start_time = time.time()
     # cut tiles with coordinates in the name (exclude white)
-    n_x, n_y, raw_img, resx, resy, ct = Slicer.tile(image_file=imgfile, outdir=out_dir, level=0)
+    n_x, n_y, raw_img, resx, resy, ct = Slicer.tile(image_file=imgfile, outdir=data_dir, level=0)
     print("--- %s seconds ---" % (time.time() - start_time))
     # load tiles dictionary
-    dict = pd.read_csv(out_dir+'/dict.csv', header=0)
+    dict = pd.read_csv(data_dir+'/dict.csv', header=0)
     if not os.path.isfile(data_dir + '/test.tfrecords'):
         loader(data_dir)
     # predictions on tiles
