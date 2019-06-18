@@ -467,7 +467,7 @@ def CAM_R(net, w, pred, x, path, name, bs, rd=0):
     prl = pdx.argmax(axis=1).astype('uint8')
 
     for ij in range(len(prl)):
-        if pdx[ij, 1] > 0.8:
+        if pdx[ij, 0] > 0.8:
             id = str(ij + rd)
             weights_LR = w
             activation_lastconv = np.array([net[ij]])
