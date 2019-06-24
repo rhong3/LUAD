@@ -16,7 +16,7 @@ File = pd.read_csv('../Results/I3_App/Positive/{}/out/finaldict.csv'.format(dirr
 pics = []
 
 for index, row in File.iterrows():
-    if row['POS_score'] > 0.95:
+    if row['POS_score'] > 0.99:
         pics.append(str(row['Num']))
 
 f = []
