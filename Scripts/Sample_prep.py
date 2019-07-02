@@ -76,35 +76,36 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     if level:
         alll = alll[alll.level == level]
 
-    # CPTAC only
-    alll = alll[~alll['slide'].str.contains("TCGA")]
-    alll['patients'] = alll.slide.str[:9]
 
 
-    # # Added
-    # TCGA = alll[alll['slide'].str.contains("TCGA")]
-    # CPTAC = alll[~alll['slide'].str.contains("TCGA")]
-    # telist.append(CPTAC)
-    # for i in range(cls):
-    #     subset = TCGA.loc[alll['label'] == i]
-    #     unq = list(subset.slide.unique())
-    #     np.random.shuffle(unq)
-    #     validation = unq[:int(len(unq)*cut/2)]
-    #     valist.append(subset[subset['slide'].isin(validation)])
-    #     train = unq[int(len(unq)*cut/2):]
-    #     trlist.append(subset[subset['slide'].isin(train)])
-    # # End of Added
+    # # CPTAC only
+    # alll = alll[~alll['slide'].str.contains("TCGA")]
+    # alll['patients'] = alll.slide.str[:9]
 
+    # Added
+    TCGA = alll[alll['slide'].str.contains("TCGA")]
+    CPTAC = alll[~alll['slide'].str.contains("TCGA")]
+    telist.append(TCGA)
     for i in range(cls):
-        subset = alll.loc[alll['label'] == i]
-        unq = list(subset.patients.unique())
+        subset = CPTAC.loc[alll['label'] == i]
+        unq = list(subset.slide.unique())
         np.random.shuffle(unq)
         validation = unq[:int(len(unq)*cut/2)]
-        valist.append(subset[subset['patients'].isin(validation)])
-        test = unq[int(len(unq)*cut/2):int(len(unq)*cut)]
-        telist.append(subset[subset['patients'].isin(test)])
-        train = unq[int(len(unq)*cut):]
-        trlist.append(subset[subset['patients'].isin(train)])
+        valist.append(subset[subset['slide'].isin(validation)])
+        train = unq[int(len(unq)*cut/2):]
+        trlist.append(subset[subset['slide'].isin(train)])
+    # End of Added
+
+    # for i in range(cls):
+    #     subset = alll.loc[alll['label'] == i]
+    #     unq = list(subset.patients.unique())
+    #     np.random.shuffle(unq)
+    #     validation = unq[:int(len(unq)*cut/2)]
+    #     valist.append(subset[subset['patients'].isin(validation)])
+    #     test = unq[int(len(unq)*cut/2):int(len(unq)*cut)]
+    #     telist.append(subset[subset['patients'].isin(test)])
+    #     train = unq[int(len(unq)*cut):]
+    #     trlist.append(subset[subset['patients'].isin(train)])
 
     test = pd.concat(telist)
     train = pd.concat(trlist)
