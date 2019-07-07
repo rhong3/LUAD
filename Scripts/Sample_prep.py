@@ -129,9 +129,9 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     train_tiles = sku.shuffle(train_tiles)
     validation_tiles = sku.shuffle(validation_tiles)
 
-    train_tiles = train_tiles.sample(frac=0.50, replace=False)
-    validation_tiles = validation_tiles.sample(frac=0.50, replace=False)
-    test_tiles = test_tiles.sample(frac=0.50, replace=False)
+    train_tiles = train_tiles.sample(frac=0.001, replace=False)
+    validation_tiles = validation_tiles.sample(frac=0.001, replace=False)
+    test_tiles = test_tiles.sample(frac=0.20, replace=False)
 
     test_tiles.to_csv(path+'/te_sample.csv', header=True, index=False)
     train_tiles.to_csv(path+'/tr_sample.csv', header=True, index=False)
