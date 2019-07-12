@@ -61,7 +61,7 @@ def v_slide(slp, n_y, x, y, tile_size, stepsize, x0, outdir, level, dp):
         wscore = bgcheck(img, tile_size)
         if wscore < 0.33:
             img = img.resize((299, 299))
-            # img = normalization(img, std)
+            img = normalization(img, std)
             if dp:
                 ran = np.random.randint(10000)
                 img.save(outdir + "/region_x-{}-y-{}_{}.png".format(target_x, target_y, str(ran)))
@@ -85,8 +85,8 @@ def tile(image_file, outdir, level, path_to_slide="../images/", dp=False, ft=1):
     print(slp)
     print(slide.level_dimensions)
 
-    # std_img = staintools.read_image("../colorstandard.png")
-    # std_img = staintools.LuminosityStandardizer.standardize(std_img)
+    std_img = staintools.read_image("../colorstandard.png")
+    std_img = staintools.LuminosityStandardizer.standardize(std_img)
 
     bounds_width = slide.level_dimensions[level][0]
     bounds_height = slide.level_dimensions[level][1]
