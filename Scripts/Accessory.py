@@ -503,3 +503,20 @@ def CAM_R(net, w, pred, x, path, name, bs, rd=0):
                 # cv2.imwrite(imname1, a)
                 # cv2.imwrite(imname2, b)
                 cv2.imwrite(imname3, full)
+
+
+# Output activation for tSNE
+def tSNE_prep(flatnet, ori_test, y, pred, path):
+    # format clean up
+    tl = np.asmatrix(y)
+    tl = tl.argmax(axis=1).astype('uint8')
+    pdxt = np.asmatrix(pred)
+    prl = pdxt.argmax(axis=1).astype('uint8')
+    prl = pd.DataFrame(prl, columns=['Prediction'])
+    act = pd.DataFrame(flatnet)
+    outt = pd.DataFrame(pdxt, columns=['NEG_score', 'POS_score'])
+    outtlt = pd.DataFrame(tl, columns=['True_label'])
+    out = pd.concat([outt, prl, outtlt], axis=1)
+    out = pd.concat([ori_test, out, act], axis=1)
+    out.to_csv("../Results/{}/out/For_tSNE.csv".format(path), index=False)
+
