@@ -263,7 +263,11 @@ if __name__ == "__main__":
     telist = pd.read_csv(data_dir + '/te_sample.csv', header=0)
     alll = image_ids_in(img_dir)
     tes = telist[telist['slide'].isin(alll)]
-    tes = tes.sample(n=10000, replace=False)
+    tesp = tes.loc[tes['label'] == 1]
+    tesn = tes.loc[tes['label'] == 0]
+    tesp = tesp.sample(n=2000, replace=False)
+    tesn = tesn.sample(n=8000, replace=False)
+    tes = pd.concat([tesp, tesn])
     tec = len(tes['label']) - 1
     loader(tes)
     # have trained model or not; train from scratch if not
