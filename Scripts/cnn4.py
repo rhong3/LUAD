@@ -184,6 +184,7 @@ class INCEPTION():
                         pred, net, w = self.sesh.run(fetches, feed_dict)
 
                         # ac.CAM(net, w, pred, x, y, dirr, 'Test', bs, pmd, rd)
+                        net = np.mean(net, axis=(1, 2))
                         if rd == 0:
                             pdx = pred
                             yl = y

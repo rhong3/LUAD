@@ -264,7 +264,11 @@ if __name__ == "__main__":
     alll = image_ids_in(img_dir)
     tes = telist[telist['slide'].isin(alll)]
     tesp = tes.loc[tes['label'] == 1]
+    print(len(tesp['label']))
+
     tesn = tes.loc[tes['label'] == 0]
+    print(len(tesn['label']))
+
     tesp = tesp.sample(n=2000, replace=False)
     tesn = tesn.sample(n=8000, replace=False)
     tes = pd.concat([tesp, tesn])

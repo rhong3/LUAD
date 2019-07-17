@@ -264,6 +264,8 @@ def realout(pdx, path, name, pmd):
         out = pd.DataFrame(pdx, columns=['Endometrioid_score', 'Serous_score', 'Mixed_score'])
     else:
         out = pd.DataFrame(pdx, columns=['NEG_score', 'POS_score'])
+    out.reset_index(drop=True, inplace=True)
+    prl.reset_index(drop=True, inplace=True)
     out = pd.concat([out, prl], axis=1)
     out.insert(loc=0, column='Num', value=out.index)
     out.to_csv("../Results/{}/out/{}.csv".format(path, name), index=False)
@@ -289,15 +291,23 @@ def metrics(pdx, tl, path, name, pmd, ori_test=None):
     outtlt = pd.DataFrame(tl, columns=['True_label'])
     if name == 'Validation' or name == 'Training':
         outtlt = outtlt.round(0)
+    outt.reset_index(drop=True, inplace=True)
+    prl.reset_index(drop=True, inplace=True)
+    outtlt.reset_index(drop=True, inplace=True)
     out = pd.concat([outt, prl, outtlt], axis=1)
     if ori_test is not None:
+        ori_test.reset_index(drop=True, inplace=True)
         out = pd.concat([ori_test, out], axis=1)
         slide_metrics(out, path, name, lbdict, pmd)
 
     stprl = prl.replace(lbdict)
     stouttl = outtlt.replace(lbdict)
+    outt.reset_index(drop=True, inplace=True)
+    stprl.reset_index(drop=True, inplace=True)
+    stouttl.reset_index(drop=True, inplace=True)
     stout = pd.concat([outt, stprl, stouttl], axis=1)
     if ori_test is not None:
+        ori_test.reset_index(drop=True, inplace=True)
         stout = pd.concat([ori_test, stout], axis=1)
     stout.to_csv("../Results/{}/out/{}_tile.csv".format(path, name), index=False)
 
@@ -514,11 +524,17 @@ def tSNE_prep(flatnet, ori_test, y, pred, path):
     prl = pdxt.argmax(axis=1).astype('uint8')
     prl = pd.DataFrame(prl, columns=['Prediction'])
     print(np.shape(flatnet))
-    print(np.shape(np.asmatrix(flatnet)))
     act = pd.DataFrame(np.asmatrix(flatnet))
     outt = pd.DataFrame(pdxt, columns=['NEG_score', 'POS_score'])
     outtlt = pd.DataFrame(tl, columns=['True_label'])
+    outt.reset_index(drop=True, inplace=True)
+    prl.reset_index(drop=True, inplace=True)
+    outtlt.reset_index(drop=True, inplace=True)
     out = pd.concat([outt, prl, outtlt], axis=1)
+    ori_test.reset_index(drop=True, inplace=True)
+    out.reset_index(drop=True, inplace=True)
+    act.reset_index(drop=True, inplace=True)
     out = pd.concat([ori_test, out, act], axis=1)
+    ori_test.to_csv("../Results/{}/out/Ori_tSNE.csv".format(path), index=False)
     out.to_csv("../Results/{}/out/For_tSNE.csv".format(path), index=False)
 
