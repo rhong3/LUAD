@@ -250,12 +250,10 @@ def inceptionv3(input, dropout_keep_prob=0.8, num_classes=1000, is_training=True
                 [branch1x1, branch3x3, branch3x3dbl, branch_pool],
                 axis=channel_axis,
                 name='mixed' + str(9 + i))
-        # net = x
+        net = x
 
         # Classification block
         x = GlobalAveragePooling2D(name='avg_pool')(x)
-
-        net = x
 
         pool5_drop_10x10_s1 = Dropout(dropout_keep_prob)(x, training=is_training)
 
