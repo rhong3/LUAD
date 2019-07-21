@@ -30,7 +30,7 @@ def cut():
         try:
             os.mkdir("../tiles/{}".format(row['Slide_ID']))
         except FileExistsError:
-            pass
+            continue
         try:
             os.mkdir("../tiles/{}/level{}".format(row['Slide_ID'], str(level)))
             dup = False
