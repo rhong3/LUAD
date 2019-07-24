@@ -45,7 +45,10 @@ def cut():
         try:
             n_x, n_y, raw_img, resx, resy, ct = Slicer.tile(image_file=fd + row['FileName'], outdir=otdir,
                                                             level=level, dp=dup, ft=tff)
-        except IndexError:
+        except Exception as e:
+            print(row['FileName'])
+            print(e.__doc__)
+            print(e.message)
             pass
         if len(os.listdir(otdir)) < 2:
             shutil.rmtree(otdir, ignore_errors=True)
