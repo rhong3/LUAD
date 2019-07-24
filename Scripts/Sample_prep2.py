@@ -124,7 +124,6 @@ def big_image_sum(pmd, path='../tiles/', ref_file='../dummy_His_MUT_joined.csv')
             big_images.append([i, 1, path + "{}/".format(i)])
 
     datapd = pd.DataFrame(big_images, columns=['slide', 'label', 'path'])
-    datapd.to_csv(path + "All_images.csv", header=True, index=False)
 
     return datapd
 
