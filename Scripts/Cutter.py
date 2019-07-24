@@ -47,8 +47,6 @@ def cut():
                                                             level=level, dp=dup, ft=tff)
         except Exception as e:
             print(row['FileName'])
-            print(e.__doc__)
-            print(e.message)
             pass
         if len(os.listdir(otdir)) < 2:
             shutil.rmtree(otdir, ignore_errors=True)
