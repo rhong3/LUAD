@@ -128,7 +128,7 @@ def set_sep(alll, path, cls, level=None, cut=0.2):
     train_tiles = sku.shuffle(train_tiles)
     validation_tiles = sku.shuffle(validation_tiles)
 
-    train_tiles = train_tiles.sample(frac=0.25, replace=False)
+    # train_tiles = train_tiles.sample(frac=0.25, replace=False)
     # validation_tiles = validation_tiles.sample(frac=0.001, replace=False)
     # test_tiles = test_tiles.sample(frac=0.20, replace=False)
 
