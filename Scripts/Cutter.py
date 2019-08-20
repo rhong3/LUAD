@@ -62,4 +62,3 @@ if __name__ == "__main__":
     if not os.path.isdir('../tiles'):
         os.mkdir('../tiles')
     cut()
-
