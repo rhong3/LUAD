@@ -15,14 +15,14 @@ bins=100
 POS_score='POS_score'
 
 library(Rtsne)
-dat = read.table(file=input_file,header=T,sep=',')
-X = as.matrix(dat[,start:dim(dat)[2]])
-res = Rtsne(X, initial_dims=100)
+ori_dat = read.table(file=input_file,header=T,sep=',')
+X = as.matrix(ori_dat[,start:dim(ori_dat)[2]])
+res = Rtsne(X, initial_dims=100, check_duplicates = FALSE)
 Y=res$Y
-out_dat = cbind(dat[,1:(start-1)],Y)
+out_dat = cbind(ori_dat[,1:(start-1)],Y)
 
-dat = cbind(dat,x_bin=cut(dat[,start],bins),
-            y_bin=cut(dat[,(start+1)],bins))
+dat = cbind(ori_dat,x_bin=cut(ori_dat[,start],bins),
+            y_bin=cut(ori_dat[,(start+1)],bins))
 
 dat = cbind(dat, x_int = as.numeric(dat$x_bin),
             y_int = as.numeric(dat$y_bin))
