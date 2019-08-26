@@ -1,5 +1,5 @@
 """
-Tile svs/scn files
+Tile svs/scn files using Slicer.py
 
 Created on 11/01/2018
 
