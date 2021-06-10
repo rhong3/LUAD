@@ -79,3 +79,20 @@ grid.arrange(p1,p2,nrow=1)
 grid.arrange(p3,p4,nrow=1)
 
 dev.off()
+
+# Reconstruct 20210610
+dat = read.csv("~/Documents/LUAD/Results/I3_CPTAC2/out/tSNE_results.csv")
+
+pdf(file="~/Documents/LUAD/Results/I3_CPTAC2/out/tSNE_20210610.pdf",
+    width=7,height=7)
+ggplot(data=dat,aes(x=X1,y=X2,col=POS_score))+
+  scale_color_gradient2(high='red',mid='gray',low='steelblue',midpoint=0.4)+
+  geom_point(alpha=1, size=1)+ scale_shape(solid = TRUE)+
+  xlim(-60,60)+
+  ylim(-60,60)+
+  theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(), 
+                     axis.line = element_line(colour = "black"), legend.position='bottom')
+
+dev.off()
+
